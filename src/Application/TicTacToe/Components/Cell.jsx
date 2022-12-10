@@ -8,8 +8,7 @@ const Cell = (props) => {
     updateBoard,
     setPrevMark,
 
-    categoryIndex: outerIndex,
-    elementIndex: innerIndex,
+    cellIndex,
     isGameOver,
     
     history
@@ -19,12 +18,10 @@ const Cell = (props) => {
   const [hasMark, setHasMark] = useState(false);
 
   useEffect(() => {
-    const { selectedBoard } = history
-
-    if(selectedBoard){
-        console.log("%c Line:16 🌮 history", "color:#ea7e5c", history.selectedBoard);
+    if(history && history.selectedBoard){
+      console.log("%c Line:16 🌮 history", "color:#ea7e5c", history.selectedBoard);
     }
-  }, [history.selectedBoard]);
+  }, [history]);
 
   // Actions
   const handleOnClick = () => {
@@ -36,16 +33,11 @@ const Cell = (props) => {
     setxMark((prev) => (!prev || prev === "X" ? "O" : "X"));
 
     updateBoard((boardItems) => {
-      return boardItems.map((boardItem, outIdx) => {
-        return boardItem.map((item, inIdx) => {
-          if (outIdx === outerIndex && inIdx === innerIndex) {
-            return value || "X";
-          }
-
-          return item;
-        });
-      });
-    });
+        return boardItems.map((item, index) => {
+            if(index === cellIndex) return value || 'X'
+            return item
+        })
+    })
   };
 
   return (

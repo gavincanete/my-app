@@ -15,17 +15,16 @@ const Board = (props) => {
     history
   } = props;
 
-  const renderCell = (categoryIndex, elementIndex) => {
+  const renderCell = (cellIndex) => {
     return (
       <Cell
         value={value}
         setxMark={setxMark}
         updateBoard={updateBoard}
         setPrevMark={setPrevMark}
-        categoryIndex={categoryIndex}
-        elementIndex={elementIndex}
         isGameOver={isGameOver}
         history={history}
+        cellIndex={cellIndex}
       />
     );
   };
@@ -34,19 +33,19 @@ const Board = (props) => {
     <div>
       <div className="status">{status}</div>
       <div className="board-row">
-        {renderCell(0, 0)}
-        {renderCell(0, 1)}
-        {renderCell(0, 2)}
+        {renderCell(0)}
+        {renderCell(1)}
+        {renderCell(2)}
       </div>
       <div className="board-row">
-        {renderCell(1, 0)}
-        {renderCell(1, 1)}
-        {renderCell(1, 2)}
+        {renderCell(3)}
+        {renderCell(4)}
+        {renderCell(5)}
       </div>
       <div className="board-row">
-        {renderCell(2, 0)}
-        {renderCell(2, 1)}
-        {renderCell(2, 2)}
+        {renderCell(6)}
+        {renderCell(7)}
+        {renderCell(8)}
       </div>
       <button>Back</button>
       <button>Next</button>

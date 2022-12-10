@@ -10,20 +10,15 @@ const TicTactToe = () => {
 
   // Board Logic
   const [boardLogic, setBoardLogic] = useState([
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
+    "", "", "",
+    "", "", "",
+    "", "", "",
   ]);
 
-  const [history, setHistory] = useState({
-    count: 0,
-    board: undefined,
-    status: '',
-    selectedBoard: undefined
-  });
+  const [history, setHistory] = useState();
 
   // Status
-  const [status, setStatus] = useState();
+  const [status, setStatus] = useState(`Next player: ${xMark || 'X'}`);
 
   // Game Over
   const [isGameOver, setIsGameOver] = useState(false);
@@ -31,32 +26,21 @@ const TicTactToe = () => {
   const validateBoard = () => {
     const isWin =
       // Vertical
-      [boardLogic[0][0], boardLogic[1][0], boardLogic[2][0]].every(
-        (item) => item === prevMark
-      ) ||
-      [boardLogic[0][1], boardLogic[1][1], boardLogic[2][1]].every(
-        (item) => item === prevMark
-      ) ||
-      [boardLogic[0][2], boardLogic[1][2], boardLogic[2][2]].every(
-        (item) => item === prevMark
-      ) ||
-      // Horizontal
-      [boardLogic[0][0], boardLogic[0][1], boardLogic[0][2]].every(
-        (item) => item === prevMark
-      ) ||
-      [boardLogic[1][0], boardLogic[1][1], boardLogic[1][2]].every(
-        (item) => item === prevMark
-      ) ||
-      [boardLogic[2][0], boardLogic[2][1], boardLogic[2][2]].every(
-        (item) => item === prevMark
-      ) ||
-      // Diagonal
-      [boardLogic[0][0], boardLogic[1][1], boardLogic[2][2]].every(
-        (item) => item === prevMark
-      ) ||
-      [boardLogic[0][2], boardLogic[1][1], boardLogic[2][0]].every(
-        (item) => item === prevMark
-      );
+      [boardLogic[0], boardLogic[3], boardLogic[6]].every(item => item === prevMark) 
+      ||
+      [boardLogic[1], boardLogic[4], boardLogic[7]].every(item => item === prevMark)
+      ||
+      [boardLogic[2], boardLogic[5], boardLogic[8]].every(item => item === prevMark)
+      ||
+      [boardLogic[0], boardLogic[1], boardLogic[2]].every(item => item === prevMark)
+      ||
+      [boardLogic[3], boardLogic[4], boardLogic[5]].every(item => item === prevMark)
+      ||
+      [boardLogic[6], boardLogic[7], boardLogic[8]].every(item => item === prevMark)
+      ||
+      [boardLogic[0], boardLogic[4], boardLogic[8]].every(item => item === prevMark)
+      ||
+      [boardLogic[2], boardLogic[4], boardLogic[6]].every(item => item === prevMark)
 
     if (isWin) {
       setStatus(`Player ${prevMark} win!`);
@@ -67,14 +51,13 @@ const TicTactToe = () => {
   };
 
   useEffect(() => {
-    
     if (prevMark) {      
       validateBoard();
     }
   }, [prevMark]);
 
   useEffect(() => {
-    if(history.board){
+    if(history && history.board){
       setHistory(prev => {
         return {
           ...prev,
