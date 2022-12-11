@@ -15,7 +15,11 @@ const TicTactToe = () => {
     "", "", "",
   ]);
 
-  const [history, setHistory] = useState();
+  const [history, setHistory] = useState({
+    step: 0,
+    selectedBoard: undefined,
+    board: [boardLogic]
+  });
 
   // Status
   const [status, setStatus] = useState(`Next player: ${xMark || 'X'}`);
@@ -25,7 +29,6 @@ const TicTactToe = () => {
 
   const validateBoard = () => {
     const isWin =
-      // Vertical
       [boardLogic[0], boardLogic[3], boardLogic[6]].every(item => item === prevMark) 
       ||
       [boardLogic[1], boardLogic[4], boardLogic[7]].every(item => item === prevMark)
@@ -42,39 +45,54 @@ const TicTactToe = () => {
       ||
       [boardLogic[2], boardLogic[4], boardLogic[6]].every(item => item === prevMark)
 
-    if (isWin) {
-      setStatus(`Player ${prevMark} win!`);
-      setIsGameOver(true);
-    }else{
-      setStatus(`Next player: ${xMark || 'X'}`)
-    }
+    if(isWin) setIsGameOver(true)
   };
 
+  // Actions
+  const handleHistoryMove = (step) => {
+    setHistory(prev => {
+      return {
+        ...prev,
+        step,
+        selectedBoard: prev.board.at(step)
+      }
+    })
+
+    if(history.board.length === step+1)
+      setIsGameOver(true)
+    else
+      setIsGameOver(false)
+  }
+
   useEffect(() => {
-    if (prevMark) {      
+    if (!isGameOver) {
+      setStatus(`Next player: ${xMark || 'X'}`)
+    }else{
+      setStatus(`Player ${xMark === 'O'? 'X': 'O'} win!`);
+    }
+  }, [xMark, isGameOver]);
+
+  useEffect(() => {
+    if (prevMark) {
       validateBoard();
     }
+    setPrevMark('')
   }, [prevMark]);
 
   useEffect(() => {
-    if(history && history.board){
-      setHistory(prev => {
+    const { selectedBoard } = history
+    if(selectedBoard){
+      setBoardLogic(selectedBoard)
+
+      // Reset the selectedBoard
+      setHistory((prev) => {
         return {
           ...prev,
-          board: [...prev.board, ...boardLogic],
-          status
-        }
-      })
-    }else{
-      setHistory(prev => {
-        return {
-          ...prev,
-          board: boardLogic,
-          status
+          selectedBoard: undefined
         }
       })
     }
-  }, [boardLogic]);
+  },[history.selectedBoard])
 
   return (
     <div>
@@ -87,7 +105,33 @@ const TicTactToe = () => {
         status={status}
         isGameOver={isGameOver}
         history={history}
-      />
+        updateHistory={setHistory}
+      />      
+      <ol>
+        {
+          history.board && (
+            history.board.map((_, index) => {
+              if(index === 0){
+                return (
+                  <li>
+                    <button
+                      onClick={handleHistoryMove.bind(this, 0)}
+                    >Move to Start</button>
+                  </li>                  
+                )
+              }else{
+                return (
+                  <li>
+                    <button
+                      onClick={handleHistoryMove.bind(this,index)}
+                    >Move to #{index}</button>
+                  </li>
+                )
+              }
+            })
+          )
+        }
+      </ol>
     </div>
   );
 };

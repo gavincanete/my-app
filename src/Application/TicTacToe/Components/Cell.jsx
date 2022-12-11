@@ -11,17 +11,27 @@ const Cell = (props) => {
     cellIndex,
     isGameOver,
     
-    history
+    history,
+    updateHistory
   } = props;
+
+  const { 
+    selectedBoard, 
+    step,
+    board 
+  } = history
 
   const [localValue, setLocalValue] = useState("");
   const [hasMark, setHasMark] = useState(false);
 
   useEffect(() => {
-    if(history && history.selectedBoard){
-      console.log("%c Line:16 🌮 history", "color:#ea7e5c", history.selectedBoard);
+    if(selectedBoard){
+      setHasMark(false)
+      setLocalValue(selectedBoard[cellIndex])      
+      
+      setxMark(step%2 === 0? 'X': 'O')
     }
-  }, [history]);
+  }, [selectedBoard]);
 
   // Actions
   const handleOnClick = () => {
@@ -32,11 +42,28 @@ const Cell = (props) => {
 
     setxMark((prev) => (!prev || prev === "X" ? "O" : "X"));
 
+    // Update the board
     updateBoard((boardItems) => {
         return boardItems.map((item, index) => {
             if(index === cellIndex) return value || 'X'
             return item
         })
+    })  
+
+    const mutationBoard = board.slice(0, step+1)
+    // Update History table
+    const lastBoardHistory = mutationBoard.at(mutationBoard.length-1)
+    const currentBoard = lastBoardHistory.map((item, index) => {
+      if(index === cellIndex) return value || 'X'
+      return item
+    })
+
+    updateHistory((prev) => {
+      return {
+        ...prev,
+        step: step+1,
+        board: [...prev.board.slice(0,step+1), currentBoard]
+      }
     })
   };
 

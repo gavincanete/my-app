@@ -12,7 +12,8 @@ const Board = (props) => {
 
     status,
     isGameOver,
-    history
+    history,
+    updateHistory
   } = props;
 
   const renderCell = (cellIndex) => {
@@ -25,6 +26,7 @@ const Board = (props) => {
         isGameOver={isGameOver}
         history={history}
         cellIndex={cellIndex}
+        updateHistory={updateHistory}
       />
     );
   };
@@ -47,8 +49,6 @@ const Board = (props) => {
         {renderCell(7)}
         {renderCell(8)}
       </div>
-      <button>Back</button>
-      <button>Next</button>
     </div>
   );
 };
