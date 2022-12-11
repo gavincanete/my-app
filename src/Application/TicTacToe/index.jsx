@@ -58,7 +58,9 @@ const TicTactToe = () => {
       }
     })
 
-    if(history.board.length === step+1)
+    const { board } = history
+
+    if(board.length > 1 && board.length === step+1)
       setIsGameOver(true)
     else
       setIsGameOver(false)
@@ -95,43 +97,45 @@ const TicTactToe = () => {
   },[history.selectedBoard])
 
   return (
-    <div>
+    <div className="game-info">
       <h1>Tic Tact Toe</h1>
-      <Board
-        value={xMark}
-        setxMark={setxMark}
-        setPrevMark={setPrevMark}
-        updateBoard={setBoardLogic}
-        status={status}
-        isGameOver={isGameOver}
-        history={history}
-        updateHistory={setHistory}
-      />      
-      <ol>
-        {
-          history.board && (
-            history.board.map((_, index) => {
-              if(index === 0){
-                return (
-                  <li>
-                    <button
-                      onClick={handleHistoryMove.bind(this, 0)}
-                    >Move to Start</button>
-                  </li>                  
-                )
-              }else{
-                return (
-                  <li>
-                    <button
-                      onClick={handleHistoryMove.bind(this,index)}
-                    >Move to #{index}</button>
-                  </li>
-                )
-              }
-            })
-          )
-        }
-      </ol>
+      <div className="game">
+        <Board
+          value={xMark}
+          setxMark={setxMark}
+          setPrevMark={setPrevMark}
+          updateBoard={setBoardLogic}
+          status={status}
+          isGameOver={isGameOver}
+          history={history}
+          updateHistory={setHistory}
+        />
+        <ol>
+          {
+            history.board && (
+              history.board.map((_, index) => {
+                if(index === 0){
+                  return (
+                    <li>
+                      <button
+                        onClick={handleHistoryMove.bind(this, 0)}
+                      >Move to Start</button>
+                    </li>                  
+                  )
+                }else{
+                  return (
+                    <li>
+                      <button
+                        onClick={handleHistoryMove.bind(this,index)}
+                      >Move to #{index}</button>
+                    </li>
+                  )
+                }
+              })
+            )
+          }
+        </ol>
+      </div>          
     </div>
   );
 };
