@@ -9,7 +9,6 @@ const App = () => {
     <div className="App">
       <header className="App-header">       
         <TicTactToe/>
-
         {/* <TestApp/> */}
       </header>
     </div>
