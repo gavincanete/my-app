@@ -62,7 +62,7 @@ const Cell = (props) => {
       return {
         ...prev,
         step: step+1,
-        board: [...prev.board.slice(0,step+1), currentBoard]
+        board: [...mutationBoard, currentBoard]
       }
     })
   };
