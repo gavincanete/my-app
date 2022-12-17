@@ -18,7 +18,8 @@ const TicTactToe = () => {
   const [history, setHistory] = useState({
     step: 0,
     selectedBoard: undefined,
-    board: [boardLogic]
+    board: [{board:boardLogic, moves: '', isWin: false}],
+    
   });
 
   // Status
@@ -60,7 +61,7 @@ const TicTactToe = () => {
 
     const { board } = history
 
-    if(board.length > 1 && board.length === step+1)
+    if(board.length > 1 && board.length === step+1 && board.at(step).isWin)
       setIsGameOver(true)
     else
       setIsGameOver(false)
@@ -84,7 +85,7 @@ const TicTactToe = () => {
   useEffect(() => {
     const { selectedBoard } = history
     if(selectedBoard){
-      setBoardLogic(selectedBoard)
+      setBoardLogic(selectedBoard.board)
 
       // Reset the selectedBoard
       setHistory((prev) => {
@@ -113,21 +114,22 @@ const TicTactToe = () => {
         <ol>
           {
             history.board && (
-              history.board.map((_, index) => {
+              history.board.map((item, index) => {
                 if(index === 0){
                   return (
-                    <li>
+                    <li key={index}>
                       <button
                         onClick={handleHistoryMove.bind(this, 0)}
-                      >Move to Start</button>
+                      >Move to Start: {item.moves}</button>
                     </li>                  
                   )
                 }else{
+                  const {row, col} = item.moves
                   return (
-                    <li>
+                    <li key={index}>
                       <button
                         onClick={handleHistoryMove.bind(this,index)}
-                      >Move to #{index}</button>
+                    >Move to #{index}: ({row}, {col})</button>                      
                     </li>
                   )
                 }
