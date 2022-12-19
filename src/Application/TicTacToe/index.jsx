@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Board from "./Components/Board";
+import { mutateState } from '../utils/general';
 
 const TicTactToe = () => {
   // Current Mark
@@ -18,8 +19,7 @@ const TicTactToe = () => {
   const [history, setHistory] = useState({
     step: 0,
     selectedBoard: undefined,
-    board: [{board:boardLogic, moves: '', isWin: false}],
-    
+    board: [{board:boardLogic, moves: '', isWin: false}]    
   });
 
   // Status
@@ -29,24 +29,24 @@ const TicTactToe = () => {
   const [isGameOver, setIsGameOver] = useState(false);
 
   const validateBoard = () => {
-    const isWin =
-      [boardLogic[0], boardLogic[3], boardLogic[6]].every(item => item === prevMark) 
-      ||
-      [boardLogic[1], boardLogic[4], boardLogic[7]].every(item => item === prevMark)
-      ||
-      [boardLogic[2], boardLogic[5], boardLogic[8]].every(item => item === prevMark)
-      ||
-      [boardLogic[0], boardLogic[1], boardLogic[2]].every(item => item === prevMark)
-      ||
-      [boardLogic[3], boardLogic[4], boardLogic[5]].every(item => item === prevMark)
-      ||
-      [boardLogic[6], boardLogic[7], boardLogic[8]].every(item => item === prevMark)
-      ||
-      [boardLogic[0], boardLogic[4], boardLogic[8]].every(item => item === prevMark)
-      ||
-      [boardLogic[2], boardLogic[4], boardLogic[6]].every(item => item === prevMark)
+    const isWin =        
+      [boardLogic[0], boardLogic[3], boardLogic[6]].every(item => item === prevMark) ?
+      [0,3,6]: [boardLogic[1], boardLogic[4], boardLogic[7]].every(item => item === prevMark) ?
+      [1,4,7]: [boardLogic[2], boardLogic[5], boardLogic[8]].every(item => item === prevMark) ?
+      [2,5,8]: [boardLogic[0], boardLogic[1], boardLogic[2]].every(item => item === prevMark) ?
+      [0,1,2]: [boardLogic[3], boardLogic[4], boardLogic[5]].every(item => item === prevMark) ?
+      [3,4,5]: [boardLogic[6], boardLogic[7], boardLogic[8]].every(item => item === prevMark) ?
+      [6,7,8]: [boardLogic[0], boardLogic[4], boardLogic[8]].every(item => item === prevMark) ?
+      [0,4,8]: [boardLogic[2], boardLogic[4], boardLogic[6]].every(item => item === prevMark) ?
+      [2,4,6]: [0,0,0]    
 
-    if(isWin) setIsGameOver(true)
+    if(isWin.some(item => !!item)){
+      setIsGameOver(true)
+
+      mutateState(setHistory, {
+        candidateCell: isWin
+      })      
+    }    
   };
 
   // Actions
@@ -63,8 +63,15 @@ const TicTactToe = () => {
 
     if(board.length > 1 && board.length === step+1 && board.at(step).isWin)
       setIsGameOver(true)
-    else
+    else{
       setIsGameOver(false)
+      setHistory((prev) => {
+        return {
+          ...prev,          
+          candidateCell: undefined
+        }
+      })
+    }
   }
 
   useEffect(() => {
@@ -88,12 +95,9 @@ const TicTactToe = () => {
       setBoardLogic(selectedBoard.board)
 
       // Reset the selectedBoard
-      setHistory((prev) => {
-        return {
-          ...prev,
-          selectedBoard: undefined
-        }
-      })
+      mutateState(setHistory, {
+        selectedBoard: undefined
+      })      
     }
   },[history.selectedBoard])
 
@@ -128,6 +132,7 @@ const TicTactToe = () => {
                   return (
                     <li key={index}>
                       <button
+                      style={{fontWeight: index === history.board.length-1? 'bold': 'normal'}}
                         onClick={handleHistoryMove.bind(this,index)}
                     >Move to #{index}: ({row}, {col})</button>                      
                     </li>
