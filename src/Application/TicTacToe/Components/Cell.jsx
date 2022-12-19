@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./TicTacToe.css";
+import { mutateState } from '../../utils/general';
 
 const Cell = (props) => {
   const {
@@ -21,7 +22,8 @@ const Cell = (props) => {
   const { 
     selectedBoard, 
     step,
-    board 
+    board,
+    candidateCell 
   } = history
 
   const [localValue, setLocalValue] = useState("");
@@ -48,12 +50,9 @@ const Cell = (props) => {
         isWin: true
       }
 
-      updateHistory((prev) => {
-      return {
-        ...prev,        
+      mutateState(updateHistory, {
         board: [...mutationBoard, newBoard]
-      }
-    })
+      })
 
     }
   },[isGameOver])
@@ -68,9 +67,7 @@ const Cell = (props) => {
     setxMark((prev) => (!prev || prev === "X" ? "O" : "X"));
 
     // Update the board
-    updateBoard((boardItems) => {
-      console.log("%c Line:50 🌽 boardItems", "color:#465975", boardItems);
-      
+    updateBoard((boardItems) => {      
         return boardItems.map((item, index) => {
             if(index === cellIndex) return value || 'X'
             return item
@@ -97,13 +94,9 @@ const Cell = (props) => {
       }
     }
 
-    // Update History table
-    updateHistory((prev) => {
-      return {
-        ...prev,
-        step: step+1,
-        board: [...mutationBoard, newBoardHistory]
-      }
+    mutateState(updateHistory, {
+      step: step+1,
+      board: [...mutationBoard, newBoardHistory]
     })
   };
 
@@ -112,6 +105,7 @@ const Cell = (props) => {
       className="square"
       disabled={isGameOver}
       onClick={!hasMark && handleOnClick}
+      style={{color: candidateCell && candidateCell.includes(cellIndex) && 'red'}}
     >
       {localValue}
     </button>
